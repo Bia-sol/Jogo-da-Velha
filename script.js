@@ -3,6 +3,7 @@ const btiniciaJogo= document.querySelector('#iniciaJogo')
 const introMusic = new Audio ('./assets/audio/theme.mp3')
 
 intro.addEventListener('click',iniciaPartida)
+
 function iniciaPartida (){
     intro.style.display='none'
     stage.style.display='flex'
@@ -11,13 +12,13 @@ function iniciaPartida (){
 
 const stage= document.querySelector('.stage');
 const symbols = ['gon', 'killua'];
-const player1 = []
-const player2 = []
+const player1jogadas = []
+const player2jogadas = []
 const board = []
-let vencedor = 0
+let vencedor = false
 let currentPlayer = 0
 
-let winStates =  [ 
+let possibilidadesVitoria =  [ 
     [0,1,2],
     [3,4,5],
     [6,7,8],
@@ -30,8 +31,9 @@ let winStates =  [
 
 
 function pegaIdJogador (event){
-    let itemClicado = event.target
     let idItemClicado =  event.target.id
+    let itemClicado = event.target
+   
         
     fazJogada(idItemClicado,itemClicado)   
 }
@@ -39,7 +41,7 @@ stage.addEventListener('click',pegaIdJogador)
 
 
 
-function addClass (itemClicado,id){
+function addClass (itemClicado){
     
     itemClicado.classList.add(symbols[currentPlayer])
 }
@@ -49,22 +51,20 @@ function fazJogada (id,item){
    
 
     if(!board.includes(id)){
-        console.log('board incluido');
         board.push(id)
-        board.sort()
 
         if(currentPlayer === 0){
            
-            player1.push(Number(id))
-            player1.sort()
-            addClass(item,id)
-            verificaVencedor(player1)
+            player1jogadas.push(Number(id))
+            player1jogadas.sort()
+            addClass(item)
+            verificaVencedor(player1jogadas)
             currentPlayer++
         }else{
-            player2.push(Number(id))
-            player2.sort()
-            addClass(item,id)
-            verificaVencedor(player2)
+            player2jogadas.push(Number(id))
+            player2jogadas.sort()
+            addClass(item)
+            verificaVencedor(player2jogadas)
             currentPlayer--
         }
 
@@ -78,22 +78,18 @@ function fazJogada (id,item){
 }
 
 
-function verificaVencedor(player){
+function verificaVencedor(playerJogada){
  
+    possibilidadesVitoria.forEach(item =>{
+       
+        let verificaVencedor = playerJogada.includes(item[0]) && playerJogada.includes(item[1]) && playerJogada.includes(item[2])
 
-    winStates.forEach(item =>{
-        let verification1 = player.includes(item[0])
-        let verification2 = player.includes(item[1])
-        let verification3 = player.includes(item[2])
-     
-        if(verification1 && verification2 && verification3 === true){
-            vencedor++
+        if(verificaVencedor){
+            vencedor=true
             alert(`Fim de jogo, Jogador: ${symbols[currentPlayer].toUpperCase()} venceu!`);
             stage.removeEventListener('click',pegaIdJogador)
 
             reiniciaJogo()
-            
-            
         }
 
     })
@@ -104,7 +100,9 @@ function verificaVencedor(player){
 
 
 function verificaFim(){
-    if(board.length === 9 && vencedor === 0){
+    const verificaEmpate = board.length === 9 && vencedor === false
+    
+    if(verificaEmpate){
         setTimeout(() => {
             alert('Empatou!')
             stage.removeEventListener('click',pegaIdJogador)
