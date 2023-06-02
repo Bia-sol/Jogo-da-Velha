@@ -2,7 +2,7 @@ const intro= document.querySelector('.intro')
 const btiniciaJogo= document.querySelector('#iniciaJogo')
 const introMusic = new Audio ('./assets/audio/theme.mp3')
 
-intro.addEventListener('click',iniciaPartida)
+    intro.addEventListener('click',iniciaPartida)
 
 function iniciaPartida (){
     intro.style.display='none'
@@ -120,9 +120,3 @@ function reiniciaJogo (){
         location.reload()
     }, 1000);
 }
-
-
-
-
-
-
